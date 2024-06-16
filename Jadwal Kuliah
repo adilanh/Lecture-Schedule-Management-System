@@ -1,1 +1,12 @@
+import csv
 
+class Jadwal:
+    def __init__(self, kode_mk, nama_mk, dosen, waktu):
+        self.kode_mk = kode_mk
+        self.nama_mk = nama_mk
+        self.dosen = dosen
+        self.waktu = waktu
+
+class ManajemenJadwal:
+    def __init__(self):
+        self.jadwal = []
