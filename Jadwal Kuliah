@@ -54,3 +54,76 @@ class ManajemenJadwal:
             next(reader) 
             for row in reader:
                 self.create(row[0], row[1], row[2], row[3], row[4])
+self.hapus_button = ttk.Button(self.button_frame, text="Hapus Jadwal", command=self.hapus_jadwal, style="TButton")
+        self.hapus_button.pack(fill=tk.X, pady=5)
+
+        self.import_button = ttk.Button(self.button_frame, text="Import Jadwal dari CSV", command=self.import_jadwal, style="TButton")
+        self.import_button.pack(fill=tk.X, pady=5)
+
+        self.keluar_button = ttk.Button(self.button_frame, text="Keluar", command=root.quit, style="TButton")
+        self.keluar_button.pack(fill=tk.X, pady=5)
+
+    def tambah_jadwal(self):
+        nama_matkul = self.nama_matkul_entry.get()
+        hari = self.hari_entry.get()
+        jam = self.jam_entry.get()
+        ruang = self.ruang_entry.get()
+        nama_dosen = self.nama_dosen_entry.get()
+        self.manajemen_jadwal.create(nama_matkul, hari, jam, ruang, nama_dosen)
+        messagebox.showinfo("Sukses", "Jadwal berhasil ditambahkan")
+
+    def lihat_jadwal(self):
+        jadwals = self.manajemen_jadwal.read()
+        jadwal_str = "\n\n".join([f"Nama Mata Kuliah: {jadwal.nama_matkul}\nHari: {jadwal.hari}\nJam: {jadwal.jam}\nRuang: {jadwal.ruang}\nNama Dosen: {jadwal.nama_dosen}" for jadwal in jadwals])
+        messagebox.showinfo("Daftar Jadwal", jadwal_str)
+
+    def ubah_jadwal(self):
+        nama_matkul = self.nama_matkul_entry.get()
+        hari = self.hari_entry.get()
+        jam = self.jam_entry.get()
+        ruang = self.ruang_entry.get()
+        nama_dosen = self.nama_dosen_entry.get()
+        if self.manajemen_jadwal.update(nama_matkul, hari, jam, ruang, nama_dosen):
+            messagebox.showinfo("Sukses", "Jadwal berhasil diubah")
+        else:
+            messagebox.showerror("Error", "Jadwal tidak ditemukan")
+
+    def hapus_jadwal(self):
+        nama_matkul = self.nama_matkul_entry.get()
+        if self.manajemen_jadwal.delete(nama_matkul):
+            messagebox.showinfo("Sukses", "Jadwal berhasil dihapus")
+        else:
+            messagebox.showerror("Error", "Jadwal tidak ditemukan")
+
+    def urutkan_jadwal(self):
+        selected_criteria = self.urutkan_combo.get()
+        if selected_criteria == "Hari":
+            self.manajemen_jadwal.sort_by_hari()
+        elif selected_criteria == "Nama Mata Kuliah":
+            self.manajemen_jadwal.sort_by_nama_matkul()
+        elif selected_criteria == "Nama Dosen":
+            self.manajemen_jadwal.sort_by_nama_dosen()
+        self.lihat_jadwal()
+
+    def cari_jadwal(self):
+        criteria = self.cari_combo.get()
+        value = self.cari_entry.get()
+        jadwals = self.manajemen_jadwal.search_by_criteria(criteria, value)
+        if jadwals:
+            jadwal_str = "\n\n".join([f"Nama Mata Kuliah: {jadwal.nama_matkul}\nHari: {jadwal.hari}\nJam: {jadwal.jam}\nRuang: {jadwal.ruang}\nNama Dosen: {jadwal.nama_dosen}" for jadwal in jadwals])
+            messagebox.showinfo("Hasil Pencarian", jadwal_str)
+        else:
+            messagebox.showerror("Error", "Jadwal tidak ditemukan")
+
+    def import_jadwal(self):
+        file_path = filedialog.askopenfilename()
+        if file_path:
+            self.manajemen_jadwal.import_data_csv(file_path)
+            messagebox.showinfo("Sukses", "Jadwal berhasil diimpor")
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    manajemen_jadwal = ManajemenJadwal()
+    app = JadwalKuliahApp(root, manajemen_jadwal)
+    root.mainloop()
+
