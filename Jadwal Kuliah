@@ -51,6 +51,6 @@ class ManajemenJadwal:
     def import_data_csv(self, file_name):
         with open(file_name, 'r') as file:
             reader = csv.reader(file)
-            next(reader)  # Skip header
+            next(reader) 
             for row in reader:
                 self.create(row[0], row[1], row[2], row[3], row[4])
