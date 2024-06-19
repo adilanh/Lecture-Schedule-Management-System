@@ -1,12 +1,56 @@
+import tkinter as tk
+from tkinter import messagebox, filedialog
+from tkinter import ttk
 import csv
 
-class Jadwal:
-    def __init__(self, kode_mk, nama_mk, dosen, waktu):
-        self.kode_mk = kode_mk
-        self.nama_mk = nama_mk
-        self.dosen = dosen
-        self.waktu = waktu
+class JadwalKuliah:
+    def __init__(self, nama_matkul, hari, jam, ruang, nama_dosen):
+        self.nama_matkul = nama_matkul
+        self.hari = hari
+        self.jam = jam
+        self.ruang = ruang
+        self.nama_dosen = nama_dosen
 
 class ManajemenJadwal:
     def __init__(self):
-        self.jadwal = []
+        self.jadwal_kuliah = []
+
+    def create(self, nama_matkul, hari, jam, ruang, nama_dosen):
+        jadwal = JadwalKuliah(nama_matkul, hari, jam, ruang, nama_dosen)
+        self.jadwal_kuliah.append(jadwal)
+
+    def read(self):
+        return self.jadwal_kuliah
+
+    def update(self, nama_matkul, hari, jam, ruang, nama_dosen):
+        for jadwal in self.jadwal_kuliah:
+            if jadwal.nama_matkul == nama_matkul:
+                jadwal.hari = hari
+                jadwal.jam = jam
+                jadwal.ruang = ruang
+                jadwal.nama_dosen = nama_dosen
+                return True
+        return False
+
+    def delete(self, nama_matkul):
+        for jadwal in self.jadwal_kuliah:
+            if jadwal.nama_matkul == nama_matkul:
+                self.jadwal_kuliah.remove(jadwal)
+                return True
+        return False
+
+    def sort_by_hari(self):
+        self.jadwal_kuliah.sort(key=lambda x: x.hari)
+
+    def search_by_nama_matkul(self, nama_matkul):
+        for jadwal in self.jadwal_kuliah:
+            if jadwal.nama_matkul == nama_matkul:
+                return jadwal
+        return None
+
+    def import_data_csv(self, file_name):
+        with open(file_name, 'r') as file:
+            reader = csv.reader(file)
+            next(reader)  # Skip header
+            for row in reader:
+                self.create(row[0], row[1], row[2], row[3], row[4])
