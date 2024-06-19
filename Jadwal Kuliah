@@ -42,19 +42,35 @@ class ManajemenJadwal:
     def sort_by_hari(self):
         self.jadwal_kuliah.sort(key=lambda x: x.hari)
 
-    def search_by_nama_matkul(self, nama_matkul):
+    def sort_by_nama_matkul(self):
+        self.jadwal_kuliah.sort(key=lambda x: x.nama_matkul)
+
+    def sort_by_nama_dosen(self):
+        self.jadwal_kuliah.sort(key=lambda x: x.nama_dosen)
+
+    def search_by_criteria(self, criteria, value):
+        result = []
         for jadwal in self.jadwal_kuliah:
-            if jadwal.nama_matkul == nama_matkul:
-                return jadwal
-        return None
+            if criteria == "Nama Mata Kuliah" and jadwal.nama_matkul == value:
+                result.append(jadwal)
+            elif criteria == "Hari" and jadwal.hari == value:
+                result.append(jadwal)
+            elif criteria == "Nama Dosen" and jadwal.nama_dosen == value:
+                result.append(jadwal)
+        return result
 
     def import_data_csv(self, file_name):
         with open(file_name, 'r') as file:
             reader = csv.reader(file)
-            next(reader) 
+            next(reader)
             for row in reader:
                 self.create(row[0], row[1], row[2], row[3], row[4])
 
+class JadwalKuliahApp:
+    def __init__(self, root, manajemen_jadwal):
+        self.root = root
+        self.manajemen_jadwal = manajemen_jadwal
+        self.root.title("Sistem Manajemen Jadwal Kuliah")
 
         self.root.configure(bg="#B3E5FC")
 
